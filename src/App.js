@@ -18,7 +18,8 @@ class App extends Component {
           id: 3, name: 'Write Some code'
         }, {
           id: 4, name: 'Watch Tutorials'
-        }]
+        }],
+        date: new Date()
       };
     }
 
@@ -58,6 +59,7 @@ addTodo = () => {
     return (
       <div className="App">
         <header className="App-header">
+          <h1>{this.state.date.toLocaleTimeString()}</h1>
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">React Crud</h1>
         </header>
