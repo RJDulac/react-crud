@@ -10,6 +10,10 @@ class App extends Component {
       this.state = {
         newTodo: '',
 
+        editing: false,
+
+        editingIndex: null,
+
         todos: [{
           id: 1, name: 'Play Sims 4'
         }, {
@@ -36,11 +40,19 @@ handleChange = (event) => {
 
 }
 
+generateTodoId = () => {
+  const lastTodo = this.state.todos[this.state.todos.length -1];
+  if(lastTodo) {
+    return lastTodo.id +1;
+  }
+  return 1;
+}
+
 addTodo = () => {
   const newTodo = {
     name: this.state.newTodo,
     //get the last id by subtracting and add the next id with + operator
-    id: this.state.todos[this.state.todos.length -1].id + 1
+    id: this.generateTodoId()
   };
 
   const todos = this.state.todos;
@@ -54,13 +66,41 @@ addTodo = () => {
   });
 }
 
- deleteTodo = (index) => {
-   const todos = this.state.todos;
-   delete todos[index];
+deleteTodo = (index) => {
+  const todos = this.state.todos;
+  delete todos[index];
 
-   this.setState({ todos })
+ this.setState({ todos })
 
- }
+}
+
+editTodo = (index) => {
+  const todo = this.state.todos[index];
+  this.setState({
+    editing: true,
+    newTodo: todo.name,
+    editingIndex: index
+  });
+
+}
+
+updateTodo = () => {
+  const todo = this.state.todos[this.state.editingIndex];
+
+  todo.name = this.state.newTodo;
+
+  const todos = this.state.todos;
+  todos[this.state.editingIndex] = todo;
+  this.setState({ 
+    todos, 
+    editing: false, 
+    editingIndex: null, 
+    newTodo: '' 
+  });
+
+}
+
+
 
   render() {
     console.log(this.state.newTodo);
@@ -82,13 +122,21 @@ addTodo = () => {
             value={this.state.newTodo}
           />
           <button
-            onClick={this.addTodo}
+            onClick={this.state.editing ? this.updateTodo : this.addTodo}
             disabled={this.state.newTodo.length === 0} 
-            className="btn-info mb-3 form-control">Add Todo</button>
-          <ul className="list-group">
+            className="btn-info mb-3 form-control">
+            {this.state.editing ? 'Update Todo' : 'Add Todo'}
+            </button>
+            {
+              !this.state.editing && 
+                        <ul className="list-group">
             {this.state.todos.map((item, index) => {
 
               return <li key={item.id} className="list-group-item">
+                <button 
+                className="btn-sm mr-4 btn btn-info"
+                onClick={() => { this.editTodo(index); }}
+                >U</button>
 
                 {item.name}
                 <button 
@@ -100,6 +148,8 @@ addTodo = () => {
             })}
 
             </ul>
+            }
+
         </div>
       </div>
     );
