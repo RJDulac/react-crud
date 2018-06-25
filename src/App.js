@@ -54,6 +54,14 @@ addTodo = () => {
   });
 }
 
+ deleteTodo = (index) => {
+   const todos = this.state.todos;
+   delete todos[index];
+
+   this.setState({ todos })
+
+ }
+
   render() {
     console.log(this.state.newTodo);
     return (
@@ -78,9 +86,17 @@ addTodo = () => {
             disabled={this.state.newTodo.length === 0} 
             className="btn-info mb-3 form-control">Add Todo</button>
           <ul className="list-group">
-            {this.state.todos.map((item) => {
+            {this.state.todos.map((item, index) => {
 
-              return <li key={item.id} className="list-group-item">{item.name}</li>
+              return <li key={item.id} className="list-group-item">
+
+                {item.name}
+                <button 
+                className="btn-sm ml-4 btn btn-danger"
+                onClick={() => { this.deleteTodo(index); }}
+                >X</button>
+
+                </li>;
             })}
 
             </ul>
